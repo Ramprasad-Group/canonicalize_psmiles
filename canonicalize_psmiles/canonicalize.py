@@ -23,9 +23,12 @@ def canonicalize(psmiles) -> str:
     # Apply unify once
     new_ps = unify(psmiles)
 
+    new_ps = add_brackets(new_ps)
+
     # recursively apply reduce
     for num in range(20):
         new = reduce_multiplication(new_ps)
+        new = add_brackets(new)
         if new == new_ps:
             break
         new_ps = new
