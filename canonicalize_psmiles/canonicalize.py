@@ -10,14 +10,15 @@ from rdkit.Chem.rdmolops import GetSymmSSSR
 
 
 def canonicalize(psmiles) -> str:
-    """Canonicalize PSMILES string
+    r"""Canonicalize PSMILES string
 
-    (1) Unify ([\*]CCO[\*] -> [\*]COO[\*]); apply multiple times
-
-    (2) Reduce ([\*]CCOCCO[\*] -> [\*]CCO[\*]); apply multiple times
+    Note:
+        Two step process
+        (1) Unify ([\*]CCO[\*] -> [\*]COO[\*]); apply multiple times
+        (2) Reduce ([\*]CCOCCO[\*] -> [\*]CCO[\*]); apply multiple times
 
     Returns:
-        str: canonicalized SMILES string
+        str: canonicalized PSMILES string
     """
 
     # Apply unify once
@@ -132,16 +133,13 @@ def get_connection_info(mol=None, symbol="*") -> Dict:
 
 
 def reduce_multiplication(psmiles: str) -> str:
-    """Reduces PSMILES manifolds.
+    r"""Reduces PSMILES repetitions.
     Apply multiple times to reduce to smallest PSMILES.
 
-    E.g.,
-
-    [\*]CCC[\*] --> [\*]C[\*]
-
-    [\*]COCO[\*] --> [\*]CO[\*]
-
-    [\*]COCCOCCOCCOC[\*] -> [\*]COCCOC[\*]
+    Examples:
+        [\*]CCC[\*] --> [\*]C[\*]
+        [\*]COCO[\*] --> [\*]CO[\*]
+        [\*]COCCOCCOCCOC[\*] -> [\*]COCCOC[\*]
 
     Returns:
         str: reduced PSMILES
@@ -149,7 +147,7 @@ def reduce_multiplication(psmiles: str) -> str:
     sm = psmiles
 
     # skip if rings is polymer
-    if re.findall("\d", sm):
+    if re.findall(r"\d", sm):
         return psmiles
 
     # Handle the case of PE
@@ -179,15 +177,12 @@ def reduce_multiplication(psmiles: str) -> str:
 
 
 def unify(psmiles: str) -> str:
-    """Unify PSMILES strings
+    r"""Unify PSMILES strings
 
-    E.g.,
-
-    [\*]COC[\*] --> [\*]COC[\*]
-
-    [\*]OCC[\*] --> [\*]COC[\*]
-
-    [\*]COC[\*] --> [\*]COC[\*]
+    Examples:
+        [\*]COC[\*] --> [\*]COC[\*]
+        [\*]OCC[\*] --> [\*]COC[\*]
+        [\*]COC[\*] --> [\*]COC[\*]
 
     Returns:
         str: unified polymer SMILES string
