@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "canonicalize-psmiles"
-version = "0.1.1"
+version = "0.1.2"
 description = "Canonicalize PSMILES strings."
 authors = ["Christopher Kuenneth <christopher.kuenneth@gmail.com>"]
 readme = "README.md"
@@ -8,7 +8,7 @@ packages = [{include = "canonicalize_psmiles"}]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-rdkit = "^2022.3.5"
+rdkit = "^2023.3.2"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.15.2"
