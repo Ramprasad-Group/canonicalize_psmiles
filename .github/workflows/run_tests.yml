@@ -7,11 +7,13 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+    defaults:
+      run:
+        shell: bash
 
     runs-on: ${{ matrix.os }}
 
     steps:
-
     - uses: actions/checkout@v3
 
     - uses: actions/setup-python@v4
@@ -27,11 +29,21 @@ jobs:
         virtualenvs-in-project: true
         installer-parallel: true
 
+    - name: Load cached venv
+      id: cached-pip-wheels
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache
+        key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+  
     - name: Install dependencies
+      run: poetry install --no-interaction --no-root
+
+    - name: Install library
       run: poetry install --no-interaction
 
     - name: Run tests in tests/ with pytest
       run: |
-        source .venv/bin/activate
+        source $VENV
         pytest tests/
         coverage report
