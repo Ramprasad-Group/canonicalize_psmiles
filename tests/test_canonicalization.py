@@ -354,3 +354,14 @@ def test_canonicalize_multiple():
         canonicalize_smiles.append(canonicalize(s))
     one_smiles = list(set(canonicalize_smiles))
     assert one_smiles == ["[*]c1sc(-c2sc(-c3sc([*])c4nccnc34)c3c2OCCO3)c2c1OCCO2"]
+
+
+
+def test_on_os():
+    """ Check if PSMILES canonicalize equal on Linux, Windows, and Mac OS.
+        
+    """
+    psmiles = '[*]CC(=O)c5cc(C(=O)Oc1c(Br)cc2c(c1Br)C24OC(=C)c3c(Br)c(O[*])c(Br)cc34)cc(C(C)(C)C)c5'
+    psmiles_can = canonicalize(psmiles)
+    assert psmiles_can == '[*]OC(=O)c1cc(C(=O)COc2c(Br)cc3c(c2Br)C(=C)OC32c3cc(Br)c([*])c(Br)c32)cc(C(C)(C)C)c1'
+

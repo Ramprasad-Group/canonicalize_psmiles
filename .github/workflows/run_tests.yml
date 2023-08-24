@@ -4,25 +4,46 @@ on: [push]
 jobs:
   build:
     name: Run Python Tests
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+      fail-fast: false
+    defaults:
+      run:
+        shell: bash
+
+    runs-on: ${{ matrix.os }}
 
     steps:
+    - uses: actions/checkout@v3
 
-    - uses: actions/checkout@v2
-
-    - uses: actions/setup-python@v2
+    - uses: actions/setup-python@v4
       name: Set up Python
       with:
         python-version: 3.9
 
-    - name: Install Python dependencies
-      run: |
-        export POETRY_HOME=/opt/poetry
-        python3 -m venv $POETRY_HOME
-        $POETRY_HOME/bin/pip install poetry==1.5.1
-        $POETRY_HOME/bin/poetry install 
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: 1.5.1
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+        installer-parallel: true
+
+    - name: Load cached venv
+      id: cached-pip-wheels
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache
+        key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+  
+    - name: Install dependencies
+      run: poetry install --no-interaction --no-root
+
+    - name: Install library
+      run: poetry install --no-interaction
 
     - name: Run tests in tests/ with pytest
       run: |
-        export POETRY_HOME=/opt/poetry
-        $POETRY_HOME/bin/poetry run pytest --exitfirst --verbose --failed-first
+        source $VENV
+        pytest tests/ --verbose
