@@ -354,3 +354,16 @@ def test_canonicalize_multiple():
         canonicalize_smiles.append(canonicalize(s))
     one_smiles = list(set(canonicalize_smiles))
     assert one_smiles == ["[*]c1sc(-c2sc(-c3sc([*])c4nccnc34)c3c2OCCO3)c2c1OCCO2"]
+
+def test_idempotence_of_canonicalization():
+    """ Canonicalizing some PSMILES twice switches between two PSMILES string  
+    """
+    sm1= "[*]c1ccc(Oc2ccc(-c3cc(-c4ccccc4)c4cc(Oc5ccc6nc([*])cc(-c7ccccc7)c6c5)ccc4n3)cc2)cc1"
+    sm2 = "[*]c1ccc2nc(-c3ccc(C4(c5ccc(-c6cc(-c7ccccc7)c7cc(C8([*])c9ccccc9-c9ccccc98)ccc7n6)cc5)c5ccccc5-c5ccccc54)cc3)cc(-c3ccccc3)c2c1"
+    sm3 = "[*]Oc1ccc(-c2cnc3ccc(-c4ccc5nc(-c6ccc(Oc7ccc([*])cc7)cc6)cnc5c4)cc3n2)cc1"
+    
+    can = canonicalize
+
+    assert can(can(sm1)) == "[*]c1ccc(Oc2ccc(-c3cc(-c4ccccc4)c4cc(Oc5ccc6nc([*])cc(-c7ccccc7)c6c5)ccc4n3)cc2)cc1"
+    assert can(can(sm2)) == "[*]c1ccc(C2(c3ccc(-c4cc(-c5ccccc5)c5cc(C6(c7ccc8nc([*])cc(-c9ccccc9)c8c7)c7ccccc7-c7ccccc76)ccc5n4)cc3)c3ccccc3-c3ccccc32)cc1"
+    assert can(can(sm3)) == "[*]Oc1ccc(-c2cnc3ccc(-c4ccc5nc(-c6ccc(Oc7ccc([*])cc7)cc6)cnc5c4)cc3n2)cc1"
