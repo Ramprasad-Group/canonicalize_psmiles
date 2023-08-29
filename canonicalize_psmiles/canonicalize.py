@@ -252,6 +252,13 @@ def unify(psmiles: str) -> str:
 
     sm = Chem.MolToCXSmiles(mol)
     mol = Chem.RWMol(Chem.MolFromSmiles(sm))
+    Chem.Kekulize(mol, clearAromaticFlags=True)
+
+    # FIX GH #8 idempotence of some PSMILES
+    Chem.Kekulize(mol, clearAromaticFlags=True)
+    sm = Chem.MolToCXSmiles(mol)
+    mol = Chem.RWMol(Chem.MolFromSmiles(sm))
+    
 
     if logging.DEBUG >= logging.root.level:
         nb_display(mol)
